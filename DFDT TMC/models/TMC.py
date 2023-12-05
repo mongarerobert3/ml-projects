@@ -166,6 +166,6 @@ class ETMC(TMC):
             pseudo_out = layer(pseudo_out)
 
         depth_evidence, rgb_evidence, pseudo_evidence = F.softplus(spec_out), F.softplus(rgb_out), F.softplus(pseudo_out)
-        depth_alpha, rgb_alpha, pseudo_alpha = depth_evidence + 1, rgb_evidence + 1, pseudo_evidence + 1
+        depth_alpha, rgb_alpha, pseudo_alpha = depth_evidence+1, rgb_evidence+1, pseudo_evidence+1
         depth_rgb_alpha = self.DS_Combin_two(self.DS_Combin_two(depth_alpha, rgb_alpha), pseudo_alpha)
         return depth_alpha, rgb_alpha, pseudo_alpha, depth_rgb_alpha
