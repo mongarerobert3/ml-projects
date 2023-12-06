@@ -57,15 +57,6 @@ class TMC(nn.Module):
             rgb_last_size = hidden
         self.clf_rgb.append(nn.Linear(rgb_last_size, args.n_classes))
 
-        # Initialize the model's weights
-        def weight_init(m):
-            if isinstance(m, (nn.Linear, nn.Conv2d, nn.Conv3d)):
-                nn.init.xavier_uniform_(m.weight)
-                if m.bias is not None:
-                    nn.init.zeros_(m.bias)
-
-        self.apply(weight_init)
-
     def DS_Combin_two(self, alpha1, alpha2):
         # Calculate the merger of two DS evidences
         alpha = dict()
@@ -112,15 +103,17 @@ class TMC(nn.Module):
         rgb = torch.flatten(rgb, start_dim=1)
 
         spec_out = spec
+
         for layer in self.spec_depth:
             spec_out = layer(spec_out)
 
         rgb_out = rgb
+
         for layer in self.clf_rgb:
             rgb_out = layer(rgb_out)
 
         spec_evidence, rgb_evidence = F.softplus(spec_out), F.softplus(rgb_out)
-        spec_alpha, rgb_alpha = spec_evidence + 1, rgb_evidence + 1
+        spec_alpha, rgb_alpha = spec_evidence+1, rgb_evidence+1
         spec_rgb_alpha = self.DS_Combin_two(spec_alpha, rgb_alpha)
         return spec_alpha, rgb_alpha, spec_rgb_alpha
 
@@ -137,16 +130,7 @@ class ETMC(TMC):
             last_size = hidden
         self.clf.append(nn.Linear(last_size, args.n_classes))
 
-        # Initialize the model's weights
-        def weight_init(m):
-            if isinstance(m, (nn.Linear, nn.Conv2d, nn.Conv3d)):
-                nn.init.xavier_uniform_(m.weight)
-                if m.bias is not None:
-                    nn.init.zeros_(m.bias)
-
-        self.apply(weight_init)
-
-   def forward(self, rgb, spec):
+    def forward(self, rgb, spec):
         spec = self.specenc(spec)
         spec = torch.flatten(spec, start_dim=1)
 
