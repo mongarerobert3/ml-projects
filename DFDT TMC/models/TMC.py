@@ -112,10 +112,12 @@ class TMC(nn.Module):
         rgb = torch.flatten(rgb, start_dim=1)
 
         spec_out = spec
+
         for layer in self.spec_depth:
             spec_out = layer(spec_out)
 
         rgb_out = rgb
+
         for layer in self.clf_rgb:
             rgb_out = layer(rgb_out)
 
@@ -146,7 +148,7 @@ class ETMC(TMC):
 
         self.apply(weight_init)
 
-   def forward(self, rgb, spec):
+    def forward(self, rgb, spec):
         spec = self.specenc(spec)
         spec = torch.flatten(spec, start_dim=1)
 
