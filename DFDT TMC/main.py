@@ -2,14 +2,9 @@ import os
 import argparse
 from tqdm import tqdm
 import torch.nn as nn
-import tensorflow as tf
 import torch.optim as optim
-
 from models.TMC import ETMC, ce_loss
-import torchvision.transforms as transforms
 from data.dfdt_dataset import FakeAVCelebDatasetTrain, FakeAVCelebDatasetVal
-
-
 from utils.utils import *
 from utils.logger import create_logger
 from sklearn.metrics import accuracy_score
@@ -82,13 +77,6 @@ def model_forward(i_epoch, model, args, ce_loss, batch):
     if torch.cuda.is_available():
         rgb_pt, spec_pt, tgt_pt = rgb_pt.cuda(), spec_pt.cuda(), tgt_pt.cuda()
         
-    # depth_alpha, rgb_alpha, depth_rgb_alpha = model(rgb_pt, spec_pt)
-
-    # loss = ce_loss(tgt_pt, depth_alpha, args.n_classes, i_epoch, args.annealing_epoch) + \
-    #        ce_loss(tgt_pt, rgb_alpha, args.n_classes, i_epoch, args.annealing_epoch) + \
-    #        ce_loss(tgt_pt, depth_rgb_alpha, args.n_classes, i_epoch, args.annealing_epoch)
-    # return loss, depth_alpha, rgb_alpha, depth_rgb_alpha, tgt_pt
-
     depth_alpha, rgb_alpha, pseudo_alpha, depth_rgb_alpha = model(rgb_pt, spec_pt)
 
     loss = ce_loss(tgt_pt, depth_alpha, args.n_classes, i_epoch, args.annealing_epoch) + \
@@ -241,7 +229,20 @@ def cli_main():
     train(args)
 
 
+def main():
+    parser = argparse.ArgumentParser(description="Train Models")
+    get_args(parser)
+    args, remaining_args = parser.parse_known_args()
+    assert not remaining_args, remaining_args
+    train(args)
+
 if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
-    cli_main()
+    main()
+
+
+
+
+
+
