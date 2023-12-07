@@ -177,6 +177,8 @@ class RawNet(nn.Module):
         self.sig = nn.Sigmoid()
         self.logsoftmax = nn.LogSoftmax(dim=1)
 
+        
+
     def forward(self, x, y=None):
         nb_samp = x.shape[0]
         len_seq = x.shape[1]
