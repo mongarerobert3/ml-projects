@@ -95,8 +95,8 @@ class DeepFakeClassifierSRM(nn.Module):
         self.dropout = Dropout(dropout_rate)
         self.fc = Linear(encoder_params[encoder]["features"], 1)
 
-        # Weight initialization
-        nn.init.xavier_uniform_(self.fc.weight)
+        # Weight initialization with kaiming_normal_
+        nn.init.kaiming_normal_(self.fc.weight, mode='fan_out', nonlinearity='relu')
         if self.fc.bias is not None:
             nn.init.zeros_(self.fc.bias)
 
@@ -185,9 +185,6 @@ class DeepFakeClassifierGWAP(nn.Module):
         return x
 
 
-# Example of how to use the model
-# Initialize the model with a specific encoder and dropout rate
-# For example, using "tf_efficientnet_b3_ns" encoder
 model_srm = DeepFakeClassifierSRM(encoder="tf_efficientnet_b3_ns", dropout_rate=0.5)
 
 # Similarly, you can use DeepFakeClassifier or DeepFakeClassifierGWAP
