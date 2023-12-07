@@ -1,13 +1,11 @@
 # Import necessary libraries
-import re
-import os
-import wget
 import torch
-import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
 from models.rawnet import SincConv, Residual_block
 from models.classifiers import DeepFakeClassifier
+from torch.optim import Adam
+from torch.optim.lr_scheduler import StepLR
 
 
 # ImageEncoder class with changes
